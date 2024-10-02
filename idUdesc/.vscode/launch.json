@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Pin3Application<pin3>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.udesc.pin3.Pin3Application",
+            "projectName": "pin3",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
