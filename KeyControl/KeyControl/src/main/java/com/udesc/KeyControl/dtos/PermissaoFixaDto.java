@@ -1,5 +1,11 @@
 package com.udesc.KeyControl.dtos;
 
-public record PermissaoFixaDto() {
+import java.sql.Date;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record PermissaoFixaDto(@NotBlank String[] diasEmprestimo,
+                                @NotBlank Date horaInicio,
+                                @NotBlank Date horaFim) {
     
 }

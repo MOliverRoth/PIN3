@@ -24,9 +24,10 @@ public class Usuario {
     private int idUsuario;
 
     private String nome;
+    private String email;
     private String vinculo;
     private String cpf;
-    private String email;
+    private String senha;
 
     @OneToMany(mappedBy="solicitante", orphanRemoval = true)
     private List<Emprestimo> EmprestimosSolicitante;

@@ -3,7 +3,6 @@ package com.udesc.KeyControl.models;
 import java.sql.Date;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,8 +23,12 @@ public class PermissaoFixa {
     @JoinColumn(name="id_permissao")
     private Permissao permissao;
 
-    @ElementCollection
-    private String[] diasEmprestimo;
+    private Boolean segunda;
+    private Boolean terca;
+    private Boolean quarta;
+    private Boolean quinta;
+    private Boolean sabado;
+    private Boolean domingo;
 
     private Date horaInicio;
     private Date horaFim;

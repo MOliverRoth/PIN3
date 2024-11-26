@@ -15,6 +15,7 @@ public class Usuario {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int idUsuario;
     private String nome;
+    private String email;
     private String vinculo;
     private String cpf;
     private String senha;
