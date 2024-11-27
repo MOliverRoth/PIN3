@@ -19,6 +19,8 @@ import com.udesc.KeyControl.repositories.PermissaoRepository;
 import com.udesc.KeyControl.repositories.UsuarioRepository;
 
 import jakarta.validation.Valid;
+import java.sql.Time;
+import java.time.LocalTime;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,13 +44,24 @@ public class ControllerChave {
 
     @PostMapping("/criar-chave")
     public ResponseEntity<Object> criarChave(@RequestBody @Valid ChaveDto chaveDto) {
-        var chave = new Chave();
-        BeanUtils.copyProperties(chaveDto, chave);
-        Optional<Chave> key = chaveRepository.findByCodigo(chave.getCodigo());
-        if (!key.isEmpty()) {
+        Optional<Chave> chaveExistente = chaveRepository.findByCodigo(chaveDto.codigo());
+        if (chaveExistente.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Código já existente");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(chaveRepository.save(chave));
+
+        Chave chave = new Chave();
+        BeanUtils.copyProperties(chaveDto, chave);
+
+        chave.setStatus(chave.getStatus() != null ? chave.getStatus() : "DISPONÍVEL");
+
+        if (chave.getHoraInicio() != null && chave.getHoraFim() != null
+                && chave.getHoraInicio().after(chave.getHoraFim())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hora de início deve ser anterior à hora de fim");
+        }
+
+        Chave chaveSalva = chaveRepository.save(chave);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(chaveSalva);
     }
 
     @GetMapping("/visualizar-chave/{id}")
@@ -61,10 +74,16 @@ public class ControllerChave {
     }
 
     @PutMapping("editar-chave/{id}")
-    public ResponseEntity<Chave> editarChave(@PathVariable(value = "id") int idChave, @RequestBody ChaveDto chaveDto) {
-        Optional<Chave> chave = chaveRepository.findById(idChave);
-        BeanUtils.copyProperties(chaveDto, chave);
-        return ResponseEntity.status(HttpStatus.OK).body(chaveRepository.save(chave.get()));
+    public ResponseEntity<?> editarChave(@PathVariable(value = "id") int idChave, @RequestBody ChaveDto chaveDto) {
+        Optional<Chave> chaveOptional = chaveRepository.findById(idChave);
+        if (!chaveOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chave não encontrada");
+        }
+
+        Chave chave = chaveOptional.get();
+        BeanUtils.copyProperties(chaveDto, chave, "id");
+        Chave chaveAtualizada = chaveRepository.save(chave);
+        return ResponseEntity.status(HttpStatus.OK).body(chaveAtualizada);
     }
 
     @DeleteMapping("deletar-chave/{id}")

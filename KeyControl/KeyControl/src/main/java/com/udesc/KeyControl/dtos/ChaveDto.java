@@ -2,11 +2,10 @@ package com.udesc.KeyControl.dtos;
 
 import java.sql.Time;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public record ChaveDto( @NotBlank Integer codigo,
-                        @NotBlank String titulo,
-                        @NotBlank String descricao,
+public record ChaveDto( @NotNull Integer codigo,
+                        String descricao,
                         String status,
                         Time horaInicio,
                         Time horaFim,
@@ -17,5 +16,4 @@ public record ChaveDto( @NotBlank Integer codigo,
                         Boolean sexta,
                         Boolean sabado,
                         Boolean domingo) {
-    
 }
