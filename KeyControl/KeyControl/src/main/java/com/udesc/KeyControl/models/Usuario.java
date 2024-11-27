@@ -29,24 +29,7 @@ public class Usuario {
     private String cpf;
     private String senha;
 
-    @OneToMany(mappedBy="solicitante", orphanRemoval = true)
-    private List<Emprestimo> EmprestimosSolicitante;
-
-    @OneToMany(mappedBy="devolvente", orphanRemoval = true)
-    private List<Emprestimo> emprestimosDevolvente;
-
-    @OneToMany(mappedBy="vigilanteRetirada", orphanRemoval = true)
-    private List<Emprestimo> emprestimosVigiaRetirada;
-
-    @OneToMany(mappedBy="vigilanteEntrega", orphanRemoval = true)
-    private List<Emprestimo> emprestimosVigiaEntrega;
-
-    @OneToMany(mappedBy="usuario", orphanRemoval = true)
-    private List<Permissao> permissoes;
-
-    @OneToMany(mappedBy = "concessor", orphanRemoval = true)
-    private List<Permissao> concessoes;
-
+    
     @JsonBackReference
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(

@@ -23,6 +23,7 @@ public class ControllerRelatorio {
     // Recupera todos os emprestimos
     @GetMapping("/visualizar-emprestimos")
     public ResponseEntity<List<Emprestimo>> getEmprestimos() {
+        List<Emprestimo> lp = emprestimoRepository.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(emprestimoRepository.findAll());
     }
 

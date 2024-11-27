@@ -10,13 +10,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udesc.KeyControl.KeyControlApplication;
 import com.udesc.KeyControl.models.Chave;
 import com.udesc.KeyControl.models.Emprestimo;
+import com.udesc.KeyControl.models.EmprestimoRequest;
 import com.udesc.KeyControl.models.Notificacao;
 import com.udesc.KeyControl.models.Permissao;
 import com.udesc.KeyControl.models.Usuario;
@@ -28,16 +28,13 @@ import com.udesc.KeyControl.repositories.UsuarioRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-
-
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class ControllerTelaInicial {
-    
+
     @Autowired
     ChaveRepository chaveRepository;
 
@@ -61,32 +58,29 @@ public class ControllerTelaInicial {
 
     //Realiza a ação de emprestar uma chave  
     @PostMapping("/emprestar/{id}")
-    public ResponseEntity<Object> emprestar(@PathVariable(value="id") int idChave, @RequestParam String cpf, @RequestParam String senha) {
+    public ResponseEntity<Object> emprestar(@PathVariable(value = "id") int idChave, @RequestBody EmprestimoRequest emprestimoRequest) {
         Chave key = chaveRepository.findById(idChave).get();
 
-        // valida se a chave está disponível  
         if (!key.getStatus().equalsIgnoreCase("DISPONÍVEL")) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Chave indisponível");
         }
 
-        // valida se o Login de usuário é valido
-        Optional<Usuario> usr = usuarioRepository.findByCpfAndSenha(cpf, senha);
+        Optional<Usuario> usr = usuarioRepository.findByCpfAndSenha(emprestimoRequest.getCpf(), emprestimoRequest.getSenha());
         if (usr.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
         Usuario tomador = usr.get();
-        
-        // valida se o emprestimo pode ser realizado
+
         Optional<Permissao> permiss = permissaoRepository.findByChaveAndUsuario(key, tomador);
         if (permiss.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Permissão não concedida");
         }
 
-        //validação de horário
         if (!validateEmprestimo(key)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fora do horário de empréstimo");
         }
 
+        key.setStatus("INDISPONÍVEL");
         Emprestimo emp = new Emprestimo();
         emp.setAtraso(false);
         emp.setChave(key);
@@ -95,12 +89,12 @@ public class ControllerTelaInicial {
         emp.setDataRetirada(new Date(System.currentTimeMillis()));
         emp.setHoraRetirada(new Time(System.currentTimeMillis()));
 
-        return ResponseEntity.status(1).body(emprestimoRepository.save(emp));
+        return ResponseEntity.status(HttpStatus.OK).body(emprestimoRepository.save(emp));
     }
 
     public Boolean validateEmprestimo(Chave key) {
         Boolean dia = false;
-        DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek(); // Recupera o dia da semana atual
+        DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
 
         switch (dayOfWeek) {
             case MONDAY:
@@ -145,16 +139,14 @@ public class ControllerTelaInicial {
     }
 
     @PutMapping("devolver-chave/{id}")
-    public ResponseEntity<Object> putMethodName(@PathVariable(value="id") int idChave, @RequestParam String cpf, @RequestParam String senha) {
+    public ResponseEntity<Object> putMethodName(@PathVariable(value = "id") int idChave, @RequestBody EmprestimoRequest emprestimoRequest) {
 
-        // Valida se a chave realmente foi retirada
         Chave key = chaveRepository.findById(idChave).get();
         if (key.getStatus().equalsIgnoreCase("DISPONÍVEL")) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Chave não emprestada");
         }
 
-        // valida se o Login de usuário é valido
-        Optional<Usuario> usr = usuarioRepository.findByCpfAndSenha(cpf, senha);
+        Optional<Usuario> usr = usuarioRepository.findByCpfAndSenha(emprestimoRequest.getCpf(), emprestimoRequest.getSenha());
         if (usr.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
@@ -173,7 +165,7 @@ public class ControllerTelaInicial {
         if (emp.isAtraso()) {
             Notificacao n = new Notificacao();
             n.setTitulo("Devolução com atraso");
-            n.setDescricao("Chave " +emp.getChave().getCodigo() + " devolvida com atraso por " + emp.getDevolvente().getNome());
+            n.setDescricao("Chave " + emp.getChave().getCodigo() + " devolvida com atraso por " + emp.getDevolvente().getNome());
             notificacaoRepository.save(n);
             Optional<Permissao> pr = permissaoRepository.findByChaveAndUsuario(emp.getChave(), emp.getSolicitante());
             pr.get().getConcessor().getNotificacoes().add(n);
@@ -201,5 +193,5 @@ public class ControllerTelaInicial {
 
         return true;
     }
-    
+
 }

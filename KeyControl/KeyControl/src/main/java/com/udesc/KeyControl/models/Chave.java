@@ -1,5 +1,6 @@
 package com.udesc.KeyControl.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.sql.Time;
 import java.util.List;
 
@@ -31,9 +32,11 @@ public class Chave {
     private Boolean sabado;
     private Boolean domingo;
 
+    @JsonBackReference
     @OneToMany(mappedBy= "chave", orphanRemoval = true)
     private List<Emprestimo> emprestimos;
 
+    @JsonBackReference
     @OneToMany(mappedBy="chave", orphanRemoval = true)
     private List<Permissao> permissoes;
 }

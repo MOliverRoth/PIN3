@@ -89,8 +89,12 @@ public class ControllerChave {
     @DeleteMapping("deletar-chave/{id}")
     public ResponseEntity<Object> deletarChave(@PathVariable(value = "id") int idChave) {
         Optional<Chave> chave = chaveRepository.findById(idChave);
-        chaveRepository.delete(chave.get());
-        return ResponseEntity.status(HttpStatus.OK).body("chave deletada com sucesso");
+        if (chave.isPresent()) {
+            chaveRepository.delete(chave.get());
+            return ResponseEntity.status(HttpStatus.OK).body("Chave deletada com sucesso");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chave não encontrada");
+        }
     }
 
     @PostMapping("atribuir-chave")

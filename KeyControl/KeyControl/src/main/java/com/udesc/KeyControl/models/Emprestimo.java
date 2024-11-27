@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.Time;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,27 +27,27 @@ public class Emprestimo {
     private Date dataEntrega;
     private Time horaEntrega;
 
-    @JsonBackReference
+@JsonManagedReference
     @ManyToOne
     @JoinColumn(name="id_solicitante")
     private Usuario solicitante;
 
-    @JsonBackReference
+@JsonManagedReference
     @ManyToOne
     @JoinColumn(name="id_devolvente")
     private Usuario devolvente;
 
-    @JsonBackReference
+@JsonManagedReference
     @ManyToOne
     @JoinColumn(name="id_vigilante_retirada")
     private Usuario vigilanteRetirada;
 
-    @JsonBackReference
+@JsonManagedReference
     @ManyToOne
     @JoinColumn(name="id_vigilante_entrega")
     private Usuario vigilanteEntrega;
 
-    @JsonBackReference
+@JsonManagedReference
     @ManyToOne
     @JoinColumn(name="id_Chave")
     private Chave chave;
