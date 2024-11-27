@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.udesc.KeyControl.KeyControlApplication;
 import com.udesc.KeyControl.models.Chave;
 import com.udesc.KeyControl.models.Emprestimo;
+import com.udesc.KeyControl.models.Notificacao;
 import com.udesc.KeyControl.models.Permissao;
 import com.udesc.KeyControl.models.Usuario;
 import com.udesc.KeyControl.repositories.ChaveRepository;
 import com.udesc.KeyControl.repositories.EmprestimoRepository;
+import com.udesc.KeyControl.repositories.NotificacaoRepository;
 import com.udesc.KeyControl.repositories.PermissaoRepository;
 import com.udesc.KeyControl.repositories.UsuarioRepository;
 
@@ -47,6 +49,9 @@ public class ControllerTelaInicial {
 
     @Autowired
     PermissaoRepository permissaoRepository;
+
+    @Autowired
+    NotificacaoRepository notificacaoRepository;
 
     //Recupera todas as chaves  
     @GetMapping("/visualizar-chaves")
@@ -165,6 +170,15 @@ public class ControllerTelaInicial {
         chaveRepository.save(key);
 
         emp.setAtraso(!validateDevolucao(emp, key));
+        if (emp.isAtraso()) {
+            Notificacao n = new Notificacao();
+            n.setTitulo("Devolução com atraso");
+            n.setDescricao("Chave " +emp.getChave().getCodigo() + " devolvida com atraso por " + emp.getDevolvente().getNome());
+            notificacaoRepository.save(n);
+            Optional<Permissao> pr = permissaoRepository.findByCHaveAndUsuario(emp.getChave(), emp.getSolicitante());
+            pr.get().getConcessor().getNotificacoes().add(n);
+            usuarioRepository.save(pr.get().getConcessor());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(emprestimoRepository.save(emp));
     }

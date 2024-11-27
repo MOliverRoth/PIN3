@@ -28,6 +28,11 @@ public class Permissao {
     @JoinColumn(name="id_chave")
     private Chave chave;
 
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "concessor")
+    private Usuario concessor;
+
     @OneToOne(mappedBy="permissao")
     private PermissaoEspecial permissaoEspecial;
 }

@@ -29,4 +29,10 @@ public class ControllerLogin {
         KeyControlApplication.actualUser = usr.get();
         return ResponseEntity.status(HttpStatus.OK).body(usr.get());
     }
+
+    @PostMapping("/sair")
+    public ResponseEntity<Object> deslogar() {
+        KeyControlApplication.actualUser = null;
+        return ResponseEntity.status(HttpStatus.OK).body("Usuário deslogado");
+    }
 }

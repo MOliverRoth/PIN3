@@ -44,6 +44,9 @@ public class Usuario {
     @OneToMany(mappedBy="usuario", orphanRemoval = true)
     private List<Permissao> permissoes;
 
+    @OneToMany(mappedBy = "concessor", orphanRemoval = true)
+    private List<Permissao> concessoes;
+
     @JsonBackReference
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
