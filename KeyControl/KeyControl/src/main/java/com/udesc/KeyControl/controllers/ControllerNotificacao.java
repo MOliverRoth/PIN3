@@ -10,7 +10,6 @@ import com.udesc.KeyControl.repositories.UsuarioRepository;
 
 import jakarta.validation.Valid;
 
-import java.lang.classfile.ClassFile.Option;
 import java.util.List;
 import java.util.Optional;
 

@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
 @RestController
 public class ControllerChave {
+
     @Autowired
     ChaveRepository chaveRepository;
 
@@ -60,20 +60,15 @@ public class ControllerChave {
         return ResponseEntity.status(HttpStatus.OK).body(chave.get());
     }
 
-    @GetMapping("/visualizar-chaves")
-    public ResponseEntity<List<Chave>> getChaves() {
-        return ResponseEntity.status(HttpStatus.OK).body(chaveRepository.findAll());
-    }
-    
     @PutMapping("editar-chave/{id}")
-    public ResponseEntity<Chave> editarChave(@PathVariable(value="id") int idChave, @RequestBody ChaveDto chaveDto) {
+    public ResponseEntity<Chave> editarChave(@PathVariable(value = "id") int idChave, @RequestBody ChaveDto chaveDto) {
         Optional<Chave> chave = chaveRepository.findById(idChave);
-        BeanUtils.copyProperties(chaveDto, chave); 
+        BeanUtils.copyProperties(chaveDto, chave);
         return ResponseEntity.status(HttpStatus.OK).body(chaveRepository.save(chave.get()));
     }
-    
+
     @DeleteMapping("deletar-chave/{id}")
-    public ResponseEntity<Object> deletarChave(@PathVariable(value="id") int idChave) {
+    public ResponseEntity<Object> deletarChave(@PathVariable(value = "id") int idChave) {
         Optional<Chave> chave = chaveRepository.findById(idChave);
         chaveRepository.delete(chave.get());
         return ResponseEntity.status(HttpStatus.OK).body("chave deletada com sucesso");
@@ -83,18 +78,68 @@ public class ControllerChave {
     public ResponseEntity<Object> atribuir(@RequestParam int idChave, @RequestBody int idUsuario) {
         Optional<Chave> chave = chaveRepository.findById(idChave);
         Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
-        Permissao pr = new Permissao();
-        pr.setChave(chave.get());
-        pr.setUsuario(usuario.get());  
-        pr.setConcessor(KeyControlApplication.actualUser);
-        return ResponseEntity.status(HttpStatus.OK).body(permissaoRepository.save(pr));
+
+        if (chave.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chave inexistente");
+        }
+        if (usuario.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário inexistente");
+        }
+
+        boolean jaAtribuido = permissaoRepository.existsByChaveAndUsuario(chave.get(), usuario.get());
+        if (jaAtribuido) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário já está atribuído a esta chave");
+        }
+
+        Permissao permissao = new Permissao();
+        permissao.setChave(chave.get());
+        permissao.setUsuario(usuario.get());
+        permissao.setConcessor(KeyControlApplication.actualUser);
+
+        return ResponseEntity.status(HttpStatus.OK).body(permissaoRepository.save(permissao));
     }
 
     @DeleteMapping("Desatribuir-chave/{id}")
-    public ResponseEntity<Object> desatribuir(@PathVariable(value="id") int idPermissao) {
+    public ResponseEntity<Object> desatribuir(@PathVariable(value = "id") int idPermissao) {
         Optional<Permissao> permissao = permissaoRepository.findById(idPermissao);
         permissaoRepository.delete(permissao.get());
         return ResponseEntity.status(HttpStatus.OK).body("Desatribuição feita com sucesso");
     }
-    
+
+    @GetMapping("/usuarios-chave/{idChave}")
+    public ResponseEntity<Object> getUsuariosPorChave(@PathVariable(value = "idChave") int idChave) {
+        Optional<Chave> chave = chaveRepository.findById(idChave);
+        if (chave.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chave inexistente");
+        }
+
+        List<Permissao> permissoes = permissaoRepository.findByChave(chave.get());
+        List<Usuario> usuarios = permissoes.stream()
+                .map(Permissao::getUsuario)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+    }
+
+    @DeleteMapping("/desatribuir-chave")
+    public ResponseEntity<Object> desatribuirPorChaveEUsuario(@RequestParam int idChave, @RequestParam int idUsuario) {
+        Optional<Chave> chave = chaveRepository.findById(idChave);
+        if (chave.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chave inexistente");
+        }
+
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        if (usuario.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário inexistente");
+        }
+
+        Optional<Permissao> permissao = permissaoRepository.findByChaveAndUsuario(chave.get(), usuario.get());
+        if (permissao.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Permissão não encontrada para a chave e usuário fornecidos");
+        }
+
+        permissaoRepository.delete(permissao.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Permissão removida com sucesso");
+    }
+
 }

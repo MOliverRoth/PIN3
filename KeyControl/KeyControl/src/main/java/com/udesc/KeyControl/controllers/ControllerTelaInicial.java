@@ -77,7 +77,7 @@ public class ControllerTelaInicial {
         Usuario tomador = usr.get();
         
         // valida se o emprestimo pode ser realizado
-        Optional<Permissao> permiss = permissaoRepository.findByCHaveAndUsuario(key, tomador);
+        Optional<Permissao> permiss = permissaoRepository.findByChaveAndUsuario(key, tomador);
         if (permiss.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Permissão não concedida");
         }
@@ -175,7 +175,7 @@ public class ControllerTelaInicial {
             n.setTitulo("Devolução com atraso");
             n.setDescricao("Chave " +emp.getChave().getCodigo() + " devolvida com atraso por " + emp.getDevolvente().getNome());
             notificacaoRepository.save(n);
-            Optional<Permissao> pr = permissaoRepository.findByCHaveAndUsuario(emp.getChave(), emp.getSolicitante());
+            Optional<Permissao> pr = permissaoRepository.findByChaveAndUsuario(emp.getChave(), emp.getSolicitante());
             pr.get().getConcessor().getNotificacoes().add(n);
             usuarioRepository.save(pr.get().getConcessor());
         }

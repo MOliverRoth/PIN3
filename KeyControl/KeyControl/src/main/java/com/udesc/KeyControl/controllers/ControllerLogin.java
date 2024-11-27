@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.udesc.KeyControl.KeyControlApplication;
 import com.udesc.KeyControl.models.Usuario;
 import com.udesc.KeyControl.repositories.UsuarioRepository;
+import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class ControllerLogin {
@@ -34,5 +36,11 @@ public class ControllerLogin {
     public ResponseEntity<Object> deslogar() {
         KeyControlApplication.actualUser = null;
         return ResponseEntity.status(HttpStatus.OK).body("Usuário deslogado");
+    }
+
+    @GetMapping("/usuarios")
+    public ResponseEntity<List<Usuario>> getAllUsuarios() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
 }
