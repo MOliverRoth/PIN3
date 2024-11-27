@@ -1,5 +1,6 @@
 package com.udesc.KeyControl.models;
 
+import java.sql.Time;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -20,6 +21,15 @@ public class Chave {
     private int codigo;
     private String descricao;
     private String status;
+    private Time horaInicio;
+    private Time horaFim;
+    private Boolean segunda;
+    private Boolean terca;
+    private Boolean quarta;
+    private Boolean quinta;
+    private Boolean sexta;
+    private Boolean sabado;
+    private Boolean domingo;
 
     @OneToMany(mappedBy= "chave", orphanRemoval = true)
     private List<Emprestimo> emprestimos;

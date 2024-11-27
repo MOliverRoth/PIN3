@@ -2,20 +2,26 @@ package com.udesc.KeyControl.controllers;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udesc.KeyControl.KeyControlApplication;
 import com.udesc.KeyControl.models.Chave;
 import com.udesc.KeyControl.models.Emprestimo;
+import com.udesc.KeyControl.models.Permissao;
 import com.udesc.KeyControl.models.Usuario;
 import com.udesc.KeyControl.repositories.ChaveRepository;
 import com.udesc.KeyControl.repositories.EmprestimoRepository;
+import com.udesc.KeyControl.repositories.PermissaoRepository;
 import com.udesc.KeyControl.repositories.UsuarioRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +44,9 @@ public class ControllerTelaInicial {
 
     @Autowired
     EmprestimoRepository emprestimoRepository;
+
+    @Autowired
+    PermissaoRepository permissaoRepository;
 
     //Recupera todas as chaves  
     @GetMapping("/visualizar-chaves")
@@ -62,7 +71,16 @@ public class ControllerTelaInicial {
         }
         Usuario tomador = usr.get();
         
-        // adicionar código para validar se o tomador possui permissão para recolher a chave
+        // valida se o emprestimo pode ser realizado
+        Optional<Permissao> permiss = permissaoRepository.findByCHaveAndUsuario(key, tomador);
+        if (permiss.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Permissão não concedida");
+        }
+
+        //validação de horário
+        if (!validateEmprestimo(key)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fora do horário de empréstimo");
+        }
 
         Emprestimo emp = new Emprestimo();
         emp.setAtraso(false);
@@ -71,7 +89,54 @@ public class ControllerTelaInicial {
         emp.setVigilanteRetirada(KeyControlApplication.actualUser);
         emp.setDataRetirada(new Date(System.currentTimeMillis()));
         emp.setHoraRetirada(new Time(System.currentTimeMillis()));
+
         return ResponseEntity.status(1).body(emprestimoRepository.save(emp));
+    }
+
+    public Boolean validateEmprestimo(Chave key) {
+        Boolean dia = false;
+        DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek(); // Recupera o dia da semana atual
+
+        switch (dayOfWeek) {
+            case MONDAY:
+                dia = key.getSegunda();
+                break;
+            case TUESDAY:
+                dia = key.getTerca();
+                break;
+            case WEDNESDAY:
+                dia = key.getQuarta();
+                break;
+            case THURSDAY:
+                dia = key.getQuinta();
+                break;
+            case FRIDAY:
+                dia = key.getSexta();
+                break;
+            case SATURDAY:
+                dia = key.getSabado();
+                break;
+            case SUNDAY:
+                dia = key.getDomingo();
+                break;
+            default:
+                break;
+        }
+
+        if (dia) {
+            Time horaRetiro = new Time(System.currentTimeMillis());
+            LocalTime horaRetirada = horaRetiro.toLocalTime();
+            LocalTime horaInicio = key.getHoraInicio().toLocalTime();
+            LocalTime horaFim = key.getHoraFim().toLocalTime();
+
+            if (horaRetirada.isBefore(horaInicio)) {
+                return false;
+            }
+            if (horaRetirada.isAfter(horaFim)) {
+                return false;
+            }
+        }
+        return dia;
     }
 
     @PutMapping("devolver-chave/{id}")
@@ -90,7 +155,7 @@ public class ControllerTelaInicial {
         }
         Usuario devolvente = usr.get();
 
-        Emprestimo emp = emprestimoRepository.findByChaveAndVigilanteEntregaIsNull(idChave).get();
+        Emprestimo emp = emprestimoRepository.findByChaveAndVigilanteEntregaIsNull(key);
         emp.setDevolvente(devolvente);
         emp.setVigilanteEntrega(KeyControlApplication.actualUser);
         emp.setDataEntrega(new Date(System.currentTimeMillis()));
@@ -98,7 +163,29 @@ public class ControllerTelaInicial {
         emprestimoRepository.save(emp);
         key.setStatus("DISPONÍVEL");
         chaveRepository.save(key);
+
+        emp.setAtraso(!validateDevolucao(emp, key));
+
         return ResponseEntity.status(HttpStatus.OK).body(emprestimoRepository.save(emp));
+    }
+
+    public Boolean validateDevolucao(Emprestimo emp, Chave key) {
+        Time horaDev = new Time(System.currentTimeMillis());
+        LocalTime horaDevolucao = horaDev.toLocalTime();
+        LocalTime horaFim = key.getHoraFim().toLocalTime();
+
+        Date dataAt = new Date(System.currentTimeMillis());
+        LocalDate dataAtual = dataAt.toLocalDate();
+        LocalDate dataEmprestimo = emp.getDataRetirada().toLocalDate();
+
+        if (dataAtual.isAfter(dataEmprestimo)) {
+            return false;
+        }
+        if (horaDevolucao.isAfter(horaFim)) {
+            return false;
+        }
+
+        return true;
     }
     
 }

@@ -28,9 +28,6 @@ public class Permissao {
     @JoinColumn(name="id_chave")
     private Chave chave;
 
-    @OneToOne(mappedBy ="permissao")
-    private PermissaoFixa permissaoFixa;
-
     @OneToOne(mappedBy="permissao")
     private PermissaoEspecial permissaoEspecial;
 }
