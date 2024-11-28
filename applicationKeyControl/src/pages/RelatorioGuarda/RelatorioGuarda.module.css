@@ -1,0 +1,148 @@
+.container {
+    padding: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cabecalho h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.cabecalho .filtro {
+    text-align: right;
+    cursor: pointer;
+    color: gray;
+    font-size: 16px;
+}
+
+
+.filtro {
+    text-align: right;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: gray;
+}
+
+.divisoria {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+.tabela-container {
+    overflow-x: auto; 
+    margin-bottom: 20px;
+}
+
+.tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabela th, .tabela td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.tabela th {
+    background-color: #f4f4f4;
+}
+
+.tabela tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.paginacao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.paginacao select {
+    margin-left: 5px;
+    padding: 5px;
+}
+
+.ativo {
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+}
+
+.filtroContainer {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.formularioFiltros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espaçamento entre os campos */
+}
+
+.formularioFiltros div {
+    flex: 1 1 45%; /* Cada campo ocupa cerca de 45% da largura */
+    min-width: 200px; /* Largura mínima para garantir que os campos não fiquem muito pequenos */
+    margin-right: 15px;
+}
+
+.formularioFiltros label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.formularioFiltros input,
+.formularioFiltros select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+
+@media (max-width: 768px) {
+    .tabela th:nth-child(4), .tabela td:nth-child(4), 
+    .tabela th:nth-child(7), .tabela td:nth-child(7) {
+        display: none; 
+    }
+
+    .tabela th, .tabela td {
+        font-size: 12px; 
+    }
+
+    .paginacao {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .tabela th, .tabela td {
+        padding: 5px;
+    }
+
+    .filtro {
+        font-size: 12px;
+    }
+}
+

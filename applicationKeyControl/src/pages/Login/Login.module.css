@@ -1,0 +1,66 @@
+.loginPage * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.loginContainer {
+  text-align: center;
+  background: #ffffff;
+  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.logo .lockIcon {
+  width: 100px;
+  height: 100px;
+}
+
+.title {
+  font-size: 24px;
+  color: #333;
+  margin: 10px 0 20px;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputField {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.inputField:focus {
+  border-color: #555;
+  outline: none;
+}
+
+.submitBtn {
+  background-color: #ccc;
+  color: #2c2c2c;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submitBtn:hover {
+  background-color: #888;
+}

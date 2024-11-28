@@ -1,0 +1,118 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
+}
+
+.modalContent {
+  background: #fff; 
+  border-radius: 10px; 
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); 
+  width: 90%;
+  max-width: 500px; 
+  padding: 20px; 
+  animation: slideIn 0.3s ease-out; 
+}
+
+@keyframes slideIn {
+  from {
+      transform: translateY(-20px);
+      opacity: 0;
+  }
+  to {
+      transform: translateY(0);
+      opacity: 1;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modalHeader h2 {
+  font-size: 1.5rem;
+  color: #333; 
+}
+
+.fecharBotao {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.fecharBotao:hover {
+  color: #555;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; 
+}
+
+.modalBody label {
+  font-size: 1rem;
+  color: #555; 
+}
+
+.modalBody input {
+  width: 95%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.modalBody input:focus {
+  border-color: #474747;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; 
+  margin-top: 20px;
+}
+
+.cancelarBotao {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.cancelarBotao:hover {
+  background-color: #e0e0e0;
+}
+
+.emprestarBotao {
+  background-color: #474747;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.emprestarBotao:hover {
+  background-color: #6d6d6d;
+}

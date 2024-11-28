@@ -1,0 +1,15 @@
+Vigilantes:
+111.333.555-77
+222.444.666-88
+
+
+Administradores:
+555.666.777-88
+444.555.666-77
+
+
+Alunos:
+321.222.444-66
+197.111.333-55
+
+A senha para todos os usuários é 1234

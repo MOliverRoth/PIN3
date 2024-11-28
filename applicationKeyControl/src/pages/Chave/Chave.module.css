@@ -1,0 +1,96 @@
+
+.container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.conteudo {
+    margin-top: 20px;
+}
+
+.titulo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.busca {
+    width: 300px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.botaoAdicionar {
+    background-color: #7c7c7c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.botaoAdicionar:hover {
+    background-color: #aaaaaa;
+}
+
+.divisoria {
+    margin: 20px 0;
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+}
+
+.tabela {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tabela th, .tabela td {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.tabela th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.acao {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.icon {
+    width: 20px; 
+    height: 20px; 
+    cursor: pointer;
+}
+
+.divisoria {
+    border: none;
+    border-top: 1px solid #e4e4e4; 
+    margin: 20px 0; 
+    width: 100%; 
+}
+
+
+.resultados {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+

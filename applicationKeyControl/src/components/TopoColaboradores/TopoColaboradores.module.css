@@ -1,0 +1,55 @@
+.headerGuarda {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    height: 60px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.header_leftGuarda {
+    display: flex;
+    align-items: center;
+}
+
+.header_logoGuarda {
+    text-decoration: none;
+    color: #000000;
+    font-size: 30px;
+    margin-right: 20px;
+}
+
+.header_navGuarda {
+    display: flex;
+    gap: 15px;
+}
+
+.header_linkGuarda {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+
+.header_linkGuarda:hover {
+    color: #000000;
+}
+
+.header_rightGuarda {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header_iconGuarda {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.header_iconGuarda:hover {
+    color: #007BFF;
+}

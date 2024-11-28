@@ -1,0 +1,57 @@
+.container {
+    padding: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+
+}
+
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+
+.searchBar {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.searchBar input {
+    width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.statusContainer {
+    margin-left: 10px;
+    display: flex; 
+    gap: 16px; 
+}
+
+.statusLabel {
+    font-size: 16px;
+    color: #555;
+    cursor: pointer; 
+}
+
+.divisoria {
+    border: none;
+    border-top: 1px solid #e4e4e4; 
+    margin: 20px 0; 
+    width: 100%; 
+}
+
+.statusLabel:hover {
+    color: #000; 
+}
+
+.active {
+    font-weight: bold;
+    color: #000; 
+}

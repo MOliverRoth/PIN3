@@ -43,4 +43,6 @@ public class ControllerLogin {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
+ 
+    
 }
